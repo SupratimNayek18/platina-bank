@@ -10,4 +10,5 @@ public interface LoansRepository extends MongoRepository<Loan,Long> {
 
     List<Loan> findByMobileNumber(Long mobileNumber);
 
+    Optional<Loan> findByLoanNumber(Long loanNumber);
 }

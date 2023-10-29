@@ -1,8 +1,8 @@
-package com.platinabank.loans.controller;
+package com.platinabank.cards.controller;
 
-import com.platinabank.loans.constants.AccountsConstants;
-import com.platinabank.loans.dto.*;
-import com.platinabank.loans.service.ILoansService;
+import com.platinabank.cards.constants.AccountsConstants;
+import com.platinabank.cards.dto.*;
+import com.platinabank.cards.service.ICardsService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -15,67 +15,69 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @AllArgsConstructor
+@RequestMapping("/cards")
 @Tag(
-        name = "CRUD rest apis for Loans Microservice"
+        name = "CRUD rest apis for Cards Microservice"
 )
-@RequestMapping("/loans")
-public class LoansController {
+public class CardsController {
 
-    private ILoansService loansService;
+    private ICardsService cardsService;
 
 
     @Operation(
-            summary = "Post API endpoint for creating loan"
+            summary = "Post API endpoint for issuing card"
     )
     @ApiResponse(
             responseCode = "201",
             description = "HTTP Status created"
     )
-    @PostMapping("/createLoan")
-    public ResponseEntity<LoanDto> createLoan(@RequestBody @Valid LoanRequestDto loanRequestDto){
-        LoanDto loanDto = loansService.createLoan(loanRequestDto);
+    @PostMapping("/issueCard")
+    public ResponseEntity<CardDto> issueCard(@RequestBody @Valid CardRequestDto cardRequestDto){
+        CardDto cardDto = cardsService.issueCard(cardRequestDto);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(loanDto);
+                .body(cardDto);
     }
 
 
     @Operation(
-            summary = "Get API endpoint for getting loan details"
+            summary = "Get API endpoint for getting card details"
     )
     @ApiResponse(
             responseCode = "200",
             description = "HTTP Status OK"
     )
-    @GetMapping("/getLoanDetails")
-    public ResponseEntity<LoanDto> getLoanDetails(@RequestParam Long loanNumber){
-        LoanDto loanDto = loansService.getLoanDetails(loanNumber);
+    @GetMapping("/getCardDetails")
+    public ResponseEntity<CardDto> getCardDetails(@RequestParam Long cardNumber){
+        CardDto cardDto = cardsService.getCardDetails(cardNumber);
         return ResponseEntity
                 .ok()
-                .body(loanDto);
+                .body(cardDto);
     }
 
 
     @Operation(
-            summary = "Get API endpoint for getting all loan summary amount and outstanding"
+            summary = "Get API endpoint for getting all card details"
     )
     @ApiResponse(
             responseCode = "200",
             description = "HTTP Status OK"
     )
-    @GetMapping("/getTotalLoanDetails")
-    public ResponseEntity<LoanResponseDto> getTotalLoanDetails(@RequestParam Long mobileNumber){
-        LoanResponseDto loanResponseDto = loansService.getTotalLoanInfo(mobileNumber);
+    @GetMapping("/getAllCardDetails")
+    public ResponseEntity<List<CardDto>> getAllCardDetails(@RequestParam Long mobileNumber){
+        List<CardDto> cardList = cardsService.getAllCardDetails(mobileNumber);
         return ResponseEntity
                 .ok()
-                .body(loanResponseDto);
+                .body(cardList);
     }
 
 
     @Operation(
-            summary = "Put API endpoint for updating/paying loan amount"
+            summary = "Put API endpoint for updating/paying card limit/paid/outstanding amount"
     )
     @ApiResponses({
             @ApiResponse(
@@ -92,9 +94,9 @@ public class LoansController {
                     )
             )
     })
-    @PutMapping("/updateLoan")
-    public ResponseEntity<ResponseDto> updateLoan(@RequestParam Long loanNumber,@RequestParam int amount){
-        loansService.updateLoanDetails(loanNumber,amount);
+    @PutMapping("/updateCard")
+    public ResponseEntity<ResponseDto> updateCard(@RequestBody @Valid CardUpdateDto cardUpdateDto){
+        cardsService.updateCard(cardUpdateDto);
         return ResponseEntity
                 .ok()
                 .body(new ResponseDto(AccountsConstants.STATUS_200,AccountsConstants.MESSAGE_200));
@@ -102,7 +104,7 @@ public class LoansController {
 
 
     @Operation(
-            summary = "Delete API endpoint for deleting loan details"
+            summary = "Delete API endpoint for deleting card details"
     )
     @ApiResponses({
             @ApiResponse(
@@ -119,9 +121,9 @@ public class LoansController {
                     )
             )
     })
-    @DeleteMapping("/deleteLoan")
-    public ResponseEntity<ResponseDto> deleteLoan(@RequestParam Long loanNumber){
-        loansService.deleteLoanDetails(loanNumber);
+    @DeleteMapping("/deleteCard")
+    public ResponseEntity<ResponseDto> deleteCard(@RequestParam Long cardNumber){
+        cardsService.deleteCard(cardNumber);
         return ResponseEntity
                 .ok()
                 .body(new ResponseDto(AccountsConstants.STATUS_200,AccountsConstants.MESSAGE_200));

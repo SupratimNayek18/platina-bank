@@ -1,18 +1,19 @@
 package com.platinabank.loans.service;
 
 import com.platinabank.loans.dto.LoanDto;
+import com.platinabank.loans.dto.LoanRequestDto;
 import com.platinabank.loans.dto.LoanResponseDto;
 
 public interface ILoansService {
 
-    LoanDto createLoan(LoanDto loanDto);
+    LoanDto createLoan(LoanRequestDto loanRequestDto);
 
-    LoanDto getLoanDetails(Long loanId);
+    LoanDto getLoanDetails(Long loanNumber);
 
     LoanResponseDto getTotalLoanInfo(Long mobileNumber);
 
-    void updateLoanDetails(Long loanId, int amount);
+    void updateLoanDetails(Long loanNumber, int amount);
 
-    void deleteLoanDetails(Long loanId);
+    void deleteLoanDetails(Long loanNumber);
 
 }

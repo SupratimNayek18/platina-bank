@@ -17,7 +17,7 @@ public class Loan {
 
     private Long mobileNumber;
 
-    private String loanNumber;
+    private Long loanNumber;
 
     private String loanType;
 

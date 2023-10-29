@@ -1,6 +1,7 @@
 package com.platinabank.loans.service.impl;
 
 import com.platinabank.loans.dto.LoanDto;
+import com.platinabank.loans.dto.LoanRequestDto;
 import com.platinabank.loans.dto.LoanResponseDto;
 import com.platinabank.loans.exception.ResourceNotFoundException;
 import com.platinabank.loans.model.Loan;
@@ -26,10 +27,13 @@ public class LoansServiceImpl implements ILoansService {
 
     //Method to create loan
     @Override
-    public LoanDto createLoan(LoanDto loanDto) {
+    public LoanDto createLoan(LoanRequestDto loanRequestDto) {
 
-        Loan loan = LoanMapper.mapToLoan(loanDto, new Loan());
+        Loan loan = LoanMapper.mapToLoan(loanRequestDto, new Loan());
         loan.setLoanId(IdGenerator.generateLoanId());
+        loan.setLoanNumber(IdGenerator.generateLoanNumber());
+        loan.setOutstandingAmount(loanRequestDto.getTotalLoan());
+
 
         Loan savedLoan = loansRepository.save(loan);
         return LoanMapper.mapToLoanDto(savedLoan, new LoanDto());
@@ -38,7 +42,7 @@ public class LoansServiceImpl implements ILoansService {
     //Method to fetch loan details
     @Override
     public LoanDto getLoanDetails(Long loanId) {
-        Optional<Loan> loan = loansRepository.findById(loanId);
+        Optional<Loan> loan = loansRepository.findByLoanNumber(loanId);
 
         if (loan.isEmpty()) {
             throw new ResourceNotFoundException("No loans found for loan id :" + loanId);
@@ -66,15 +70,16 @@ public class LoansServiceImpl implements ILoansService {
 
     //Method to update loan details
     @Override
-    public void updateLoanDetails(Long loanId,int amount) {
+    public void updateLoanDetails(Long loanNumber,int amount) {
 
-        Optional<Loan> optionalLoan = loansRepository.findById(loanId);
+        Optional<Loan> optionalLoan = loansRepository.findByLoanNumber(loanNumber);
 
         if (optionalLoan.isEmpty()) {
-            throw new ResourceNotFoundException("No loans found for loan id :" + loanId);
+            throw new ResourceNotFoundException("No loans found for loan number :" + loanNumber);
         }
 
         Loan loan = optionalLoan.get();
+        loan.setAmountPaid(amount);
         loan.setOutstandingAmount(loan.getOutstandingAmount()-amount);
 
         loansRepository.save(loan);
@@ -83,13 +88,14 @@ public class LoansServiceImpl implements ILoansService {
 
     //Method to delete loan details
     @Override
-    public void deleteLoanDetails(Long loanId) {
-        Optional<Loan> optionalLoan = loansRepository.findById(loanId);
+    public void deleteLoanDetails(Long loanNumber) {
+        Optional<Loan> optionalLoan = loansRepository.findByLoanNumber(loanNumber);
 
         if (optionalLoan.isEmpty()) {
-            throw new ResourceNotFoundException("No loans found for loan id :" + loanId);
+            throw new ResourceNotFoundException("No loans found for loan id :" + loanNumber);
         }
 
-        loansRepository.deleteById(loanId);
+        loansRepository.delete(optionalLoan.get());
+
     }
 }

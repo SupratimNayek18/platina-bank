@@ -1,17 +1,17 @@
-package com.platinabank.loans.util;
+package com.platinabank.cards.util;
 
 import java.util.Random;
 
 public class IdGenerator {
 
-    public static long generateLoanId(){
+    public static long generateCardId(){
         Random random = new Random();
         return 100000000000L + random.nextLong(900000000000L);
     }
 
-    public static long generateLoanNumber(){
+    public static long generateCardNumber(){
         Random random = new Random();
-        return 10000000000000L + random.nextLong(90000000000000L);
+        return 1000000000000000L + random.nextLong(9000000000000000L);
     }
 
 }
