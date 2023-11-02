@@ -3,6 +3,5 @@ server:
 spring:
   data:
     mongodb:
-      host: localhost
-      port: 27017
+      uri: mongodb+srv://root:root@platina-bank.8evcdpv.mongodb.net/
       database: loansDB

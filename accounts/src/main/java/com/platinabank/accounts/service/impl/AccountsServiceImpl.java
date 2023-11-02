@@ -27,6 +27,8 @@ public class AccountsServiceImpl implements IAccountsService {
 
     private CustomerRepository customerRepository;
 
+    private IdGenerator idGenerator;
+
     /**
      * Method to register new customer
      * @param customerDto - CustomerDto object
@@ -44,12 +46,12 @@ public class AccountsServiceImpl implements IAccountsService {
         Customer customer = CustomerMapper.mapToCustomer(customerDto,new Customer());
 
         //Generating customerId for customer model and saving the model into the repository
-        customer.setCustomerId(IdGenerator.generateCustomerId());
+        customer.setCustomerId(idGenerator.generateCustomerId());
         Customer savedCustomer = customerRepository.save(customer);
 
         //Creating the account model with the customer id from saved customer
         Account account = new Account();
-        account.setAccountNumber(IdGenerator.generateAccountId());
+        account.setAccountNumber(idGenerator.generateAccountId());
         account.setAccountType(AccountsConstants.SAVINGS);
         account.setCustomerId(savedCustomer.getCustomerId());
         account.setAmount(0);
