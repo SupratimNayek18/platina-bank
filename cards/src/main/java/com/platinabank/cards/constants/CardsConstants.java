@@ -1,9 +1,9 @@
 package com.platinabank.cards.constants;
 
-public class AccountsConstants {
+public class CardsConstants {
 
     // restrict instantiation
-    private AccountsConstants() {}
+    private CardsConstants() {}
 
     public static final String STATUS_201 = "201";
     public static final String MESSAGE_201 = "Card issued successfully";

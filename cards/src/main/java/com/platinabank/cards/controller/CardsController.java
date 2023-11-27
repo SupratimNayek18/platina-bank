@@ -1,6 +1,6 @@
 package com.platinabank.cards.controller;
 
-import com.platinabank.cards.constants.AccountsConstants;
+import com.platinabank.cards.constants.CardsConstants;
 import com.platinabank.cards.dto.*;
 import com.platinabank.cards.service.ICardsService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -36,11 +36,11 @@ public class CardsController {
             description = "HTTP Status created"
     )
     @PostMapping("/issueCard")
-    public ResponseEntity<CardDto> issueCard(@RequestBody @Valid CardRequestDto cardRequestDto){
-        CardDto cardDto = cardsService.issueCard(cardRequestDto);
+    public ResponseEntity<ResponseDto> issueCard(@RequestBody @Valid CardRequestDto cardRequestDto){
+        cardsService.issueCard(cardRequestDto);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(cardDto);
+                .body(new ResponseDto(CardsConstants.STATUS_201,CardsConstants.MESSAGE_201));
     }
 
 
@@ -96,10 +96,18 @@ public class CardsController {
     })
     @PutMapping("/updateCard")
     public ResponseEntity<ResponseDto> updateCard(@RequestBody @Valid CardUpdateDto cardUpdateDto){
-        cardsService.updateCard(cardUpdateDto);
-        return ResponseEntity
-                .ok()
-                .body(new ResponseDto(AccountsConstants.STATUS_200,AccountsConstants.MESSAGE_200));
+        boolean status = cardsService.updateCard(cardUpdateDto);
+        if(status){
+            return ResponseEntity
+                    .ok()
+                    .body(new ResponseDto(CardsConstants.STATUS_200, CardsConstants.MESSAGE_200));
+        }
+        else{
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseDto(CardsConstants.STATUS_500,CardsConstants.MESSAGE_500));
+        }
+
     }
 
 
@@ -123,10 +131,20 @@ public class CardsController {
     })
     @DeleteMapping("/deleteCard")
     public ResponseEntity<ResponseDto> deleteCard(@RequestParam Long cardNumber){
-        cardsService.deleteCard(cardNumber);
-        return ResponseEntity
-                .ok()
-                .body(new ResponseDto(AccountsConstants.STATUS_200,AccountsConstants.MESSAGE_200));
+
+        boolean status = cardsService.deleteCard(cardNumber);
+
+        if(status){
+            return ResponseEntity
+                    .ok()
+                    .body(new ResponseDto(CardsConstants.STATUS_200, CardsConstants.MESSAGE_200));
+        }
+        else{
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseDto(CardsConstants.STATUS_500,CardsConstants.MESSAGE_500));
+        }
+
     }
 
 }

@@ -8,14 +8,14 @@ import java.util.List;
 
 public interface ICardsService {
 
-    CardDto issueCard(CardRequestDto cardRequestDto);
+    void issueCard(CardRequestDto cardRequestDto);
 
     CardDto getCardDetails(Long cardNumber);
 
     List<CardDto> getAllCardDetails(Long mobileNumber);
 
-    void updateCard(CardUpdateDto cardUpdateDto);
+    boolean updateCard(CardUpdateDto cardUpdateDto);
 
-    void deleteCard(Long cardNumber);
+    boolean deleteCard(Long cardNumber);
 
 }

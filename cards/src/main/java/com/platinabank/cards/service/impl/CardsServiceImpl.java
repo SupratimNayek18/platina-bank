@@ -24,7 +24,7 @@ public class CardsServiceImpl implements ICardsService {
 
     //Method to issue new card to customer
     @Override
-    public CardDto issueCard(CardRequestDto cardRequestDto) {
+    public void issueCard(CardRequestDto cardRequestDto) {
 
         Card card = new Card();
 
@@ -38,9 +38,8 @@ public class CardsServiceImpl implements ICardsService {
             card.setAvailableAmount(31000);
         }
 
-        Card savedCard = cardsRepository.save(card);
+        cardsRepository.save(card);
 
-        return CardMapper.mapToCardDto(savedCard,new CardDto());
     }
 
 
@@ -74,7 +73,9 @@ public class CardsServiceImpl implements ICardsService {
 
     //Method to update card amounts
     @Override
-    public void updateCard(CardUpdateDto cardUpdateDto) {
+    public boolean updateCard(CardUpdateDto cardUpdateDto) {
+
+        boolean status = false;
 
         Optional<Card> optionalCard = cardsRepository.findByCardNumber(cardUpdateDto.getCardNumber());
 
@@ -93,12 +94,17 @@ public class CardsServiceImpl implements ICardsService {
         }
 
         cardsRepository.save(card);
+        status = true;
+
+        return status;
     }
 
 
     //Method to delete card details
     @Override
-    public void deleteCard(Long cardNumber) {
+    public boolean deleteCard(Long cardNumber) {
+
+        boolean status = false;
 
         Optional<Card> optionalCard = cardsRepository.findByCardNumber(cardNumber);
 
@@ -107,6 +113,9 @@ public class CardsServiceImpl implements ICardsService {
         }
 
         cardsRepository.delete(optionalCard.get());
+        status = true;
+
+        return status;
     }
 
 }
