@@ -6,14 +6,14 @@ import com.platinabank.loans.dto.LoanResponseDto;
 
 public interface ILoansService {
 
-    LoanDto createLoan(LoanRequestDto loanRequestDto);
+    void createLoan(LoanRequestDto loanRequestDto);
 
     LoanDto getLoanDetails(Long loanNumber);
 
     LoanResponseDto getTotalLoanInfo(Long mobileNumber);
 
-    void updateLoanDetails(Long loanNumber, int amount);
+    boolean updateLoanDetails(Long loanNumber, int amount);
 
-    void deleteLoanDetails(Long loanNumber);
+    boolean deleteLoanDetails(Long loanNumber);
 
 }

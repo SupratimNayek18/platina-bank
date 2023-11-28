@@ -27,7 +27,7 @@ public class LoansServiceImpl implements ILoansService {
 
     //Method to create loan
     @Override
-    public LoanDto createLoan(LoanRequestDto loanRequestDto) {
+    public void createLoan(LoanRequestDto loanRequestDto) {
 
         Loan loan = LoanMapper.mapToLoan(loanRequestDto, new Loan());
         loan.setLoanId(IdGenerator.generateLoanId());
@@ -35,8 +35,8 @@ public class LoansServiceImpl implements ILoansService {
         loan.setOutstandingAmount(loanRequestDto.getTotalLoan());
 
 
-        Loan savedLoan = loansRepository.save(loan);
-        return LoanMapper.mapToLoanDto(savedLoan, new LoanDto());
+        loansRepository.save(loan);
+
     }
 
     //Method to fetch loan details
@@ -70,7 +70,9 @@ public class LoansServiceImpl implements ILoansService {
 
     //Method to update loan details
     @Override
-    public void updateLoanDetails(Long loanNumber,int amount) {
+    public boolean updateLoanDetails(Long loanNumber,int amount) {
+
+        boolean status = false;
 
         Optional<Loan> optionalLoan = loansRepository.findByLoanNumber(loanNumber);
 
@@ -83,12 +85,17 @@ public class LoansServiceImpl implements ILoansService {
         loan.setOutstandingAmount(loan.getOutstandingAmount()-amount);
 
         loansRepository.save(loan);
+        status = true;
 
+        return status;
     }
 
     //Method to delete loan details
     @Override
-    public void deleteLoanDetails(Long loanNumber) {
+    public boolean deleteLoanDetails(Long loanNumber) {
+
+        boolean status = false;
+
         Optional<Loan> optionalLoan = loansRepository.findByLoanNumber(loanNumber);
 
         if (optionalLoan.isEmpty()) {
@@ -96,6 +103,8 @@ public class LoansServiceImpl implements ILoansService {
         }
 
         loansRepository.delete(optionalLoan.get());
+        status = true;
 
+        return status;
     }
 }

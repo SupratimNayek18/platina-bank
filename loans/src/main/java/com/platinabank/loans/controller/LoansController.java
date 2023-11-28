@@ -1,6 +1,6 @@
 package com.platinabank.loans.controller;
 
-import com.platinabank.loans.constants.AccountsConstants;
+import com.platinabank.loans.constants.LoanConstants;
 import com.platinabank.loans.dto.*;
 import com.platinabank.loans.service.ILoansService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -34,11 +34,11 @@ public class LoansController {
             description = "HTTP Status created"
     )
     @PostMapping("/createLoan")
-    public ResponseEntity<LoanDto> createLoan(@RequestBody @Valid LoanRequestDto loanRequestDto){
-        LoanDto loanDto = loansService.createLoan(loanRequestDto);
+    public ResponseEntity<ResponseDto> createLoan(@RequestBody @Valid LoanRequestDto loanRequestDto){
+        loansService.createLoan(loanRequestDto);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(loanDto);
+                .body(new ResponseDto(LoanConstants.STATUS_201,LoanConstants.MESSAGE_201));
     }
 
 
@@ -94,10 +94,17 @@ public class LoansController {
     })
     @PutMapping("/updateLoan")
     public ResponseEntity<ResponseDto> updateLoan(@RequestParam Long loanNumber,@RequestParam int amount){
-        loansService.updateLoanDetails(loanNumber,amount);
-        return ResponseEntity
-                .ok()
-                .body(new ResponseDto(AccountsConstants.STATUS_200,AccountsConstants.MESSAGE_200));
+        boolean status = loansService.updateLoanDetails(loanNumber,amount);
+        if(status){
+            return ResponseEntity
+                    .ok()
+                    .body(new ResponseDto(LoanConstants.STATUS_200, LoanConstants.MESSAGE_200));
+        }
+        else{
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseDto(LoanConstants.STATUS_500, LoanConstants.MESSAGE_500));
+        }
     }
 
 
@@ -121,10 +128,18 @@ public class LoansController {
     })
     @DeleteMapping("/deleteLoan")
     public ResponseEntity<ResponseDto> deleteLoan(@RequestParam Long loanNumber){
-        loansService.deleteLoanDetails(loanNumber);
-        return ResponseEntity
-                .ok()
-                .body(new ResponseDto(AccountsConstants.STATUS_200,AccountsConstants.MESSAGE_200));
+        boolean status = loansService.deleteLoanDetails(loanNumber);
+        if(status){
+            return ResponseEntity
+                    .ok()
+                    .body(new ResponseDto(LoanConstants.STATUS_200, LoanConstants.MESSAGE_200));
+        }
+        else{
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseDto(LoanConstants.STATUS_500, LoanConstants.MESSAGE_500));
+        }
     }
+
 
 }
