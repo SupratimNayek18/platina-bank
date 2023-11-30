@@ -1,0 +1,41 @@
+services:
+
+  platinabank-accounts:
+    image: vulka9n/platinabank-accounts:v2
+    container_name: platinabank-accounts
+    ports:
+      - 8080:8080
+    deploy:
+      resources:
+        limits:
+          memory: 700m
+    networks:
+      - platinabank-network
+
+  platinabank-cards:
+    image: vulka9n/platinabank-cards:v1
+    container_name: platinabank-cards
+    ports:
+      - 8083:8083
+    deploy:
+      resources:
+        limits:
+          memory: 700m
+    networks:
+      - platinabank-network
+
+  platinabank-loans:
+    image: vulka9n/platinabank-loans:v1
+    container_name: platinabank-loans
+    ports:
+      - 8082:8082
+    deploy:
+      resources:
+        limits:
+          memory: 700m
+    networks:
+      - platinabank-network
+
+networks:
+  platinabank-network:
+    driver: bridge
