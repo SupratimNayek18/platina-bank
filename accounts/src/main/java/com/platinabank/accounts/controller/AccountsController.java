@@ -1,10 +1,7 @@
 package com.platinabank.accounts.controller;
 
 import com.platinabank.accounts.constants.AccountsConstants;
-import com.platinabank.accounts.dto.AccountDto;
-import com.platinabank.accounts.dto.CustomerDto;
-import com.platinabank.accounts.dto.ErrorResponseDto;
-import com.platinabank.accounts.dto.ResponseDto;
+import com.platinabank.accounts.dto.*;
 import com.platinabank.accounts.service.IAccountsService;
 import com.platinabank.accounts.util.validators.customerIdValidator.ValidCustomerId;
 import com.platinabank.accounts.util.validators.mobileNumberValidator.ValidMobileNumber;
@@ -18,6 +15,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import org.apache.coyote.Response;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +23,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@AllArgsConstructor
 @RequestMapping(value = "/api/accounts", produces = MediaType.APPLICATION_JSON_VALUE)
 @Validated
 @Tag(
@@ -34,6 +31,13 @@ import org.springframework.web.bind.annotation.*;
 public class AccountsController {
 
     private IAccountsService accountsService;
+
+    AccountsController(IAccountsService accountsService){
+        this.accountsService = accountsService;
+    }
+
+    @Autowired
+    private ConfigProperties configProperties;
 
     //Post endpoint to create customer account
     @Operation(
@@ -141,5 +145,32 @@ public class AccountsController {
                     .body(new ResponseDto(AccountsConstants.STATUS_500, AccountsConstants.MESSAGE_500));
         }
     }
+
+
+    @Operation(
+            summary = "Config API endpoint for getting config details"
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "HTTP Status OK"
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "Internal Server Error",
+                    content = @Content(
+                            schema = @Schema(
+                                    implementation = ErrorResponseDto.class
+                            )
+                    )
+            )
+    })
+    @GetMapping("/getConfig")
+    public ResponseEntity<ConfigProperties> getConfig(){
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(configProperties);
+    }
+
 
 }

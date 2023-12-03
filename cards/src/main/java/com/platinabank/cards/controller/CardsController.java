@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,14 +19,20 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@AllArgsConstructor
-@RequestMapping("/cards")
+@RequestMapping("/api/cards")
 @Tag(
         name = "CRUD rest apis for Cards Microservice"
 )
 public class CardsController {
 
     private ICardsService cardsService;
+
+    CardsController(ICardsService cardsService){
+        this.cardsService = cardsService;
+    }
+
+    @Autowired
+    private ConfigProperties configProperties;
 
 
     @Operation(
@@ -145,6 +152,32 @@ public class CardsController {
                     .body(new ResponseDto(CardsConstants.STATUS_500,CardsConstants.MESSAGE_500));
         }
 
+    }
+
+
+    @Operation(
+            summary = "Config API endpoint for getting config details"
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "HTTP Status OK"
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "Internal Server Error",
+                    content = @Content(
+                            schema = @Schema(
+                                    implementation = ErrorResponseDto.class
+                            )
+                    )
+            )
+    })
+    @GetMapping("/getConfig")
+    public ResponseEntity<ConfigProperties> getConfig(){
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(configProperties);
     }
 
 }

@@ -1,5 +1,6 @@
 package com.platinabank.accounts;
 
+import com.platinabank.accounts.dto.ConfigProperties;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Contact;
@@ -7,6 +8,7 @@ import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.info.License;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
 @SpringBootApplication
 @OpenAPIDefinition(
@@ -26,6 +28,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 				description = "External Documentation"
 		)
 )
+@EnableConfigurationProperties(value = {ConfigProperties.class})
 public class AccountsApplication {
 
     public static void main(String[] args) {

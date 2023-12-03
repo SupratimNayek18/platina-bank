@@ -11,20 +11,26 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@AllArgsConstructor
 @Tag(
         name = "CRUD rest apis for Loans Microservice"
 )
-@RequestMapping("/loans")
+@RequestMapping("/api/loans")
 public class LoansController {
 
     private ILoansService loansService;
 
+    LoansController(ILoansService loansService){
+        this.loansService = loansService;
+    }
+
+    @Autowired
+    private ConfigProperties configProperties;
 
     @Operation(
             summary = "Post API endpoint for creating loan"
@@ -139,6 +145,32 @@ public class LoansController {
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ResponseDto(LoanConstants.STATUS_500, LoanConstants.MESSAGE_500));
         }
+    }
+
+
+    @Operation(
+            summary = "Config API endpoint for getting config details"
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "HTTP Status OK"
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "Internal Server Error",
+                    content = @Content(
+                            schema = @Schema(
+                                    implementation = ErrorResponseDto.class
+                            )
+                    )
+            )
+    })
+    @GetMapping("/getConfig")
+    public ResponseEntity<ConfigProperties> getConfig(){
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(configProperties);
     }
 
 

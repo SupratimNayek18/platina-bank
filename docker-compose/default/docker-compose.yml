@@ -1,0 +1,71 @@
+services:
+  rabbit:
+    image: rabbitmq:3.12-management
+    hostname: rabbitmq
+    ports:
+      - 5672:5672
+      - 15672:15672
+    healthcheck:
+      test: rabbitmq-diagnostics check_port_connectivity
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+    extends:
+      file: common-config.yml
+      service: network-deploy-service
+
+  platinabank-configserver:
+    image: vulka9n/platinabank-configserver:v1
+    container_name: platinabank-configserver
+    ports:
+      - 8071:8071
+    healthcheck:
+      test: "curl --fail --silent localhost:8071/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    depends_on:
+      rabbit:
+        condition: service_healthy
+    extends:
+      file: common-config.yml
+      service: microservice-base-config
+
+  platinabank-accounts:
+    image: vulka9n/platinabank-accounts:v3
+    container_name: platinabank-accounts
+    ports:
+      - 8080:8080
+    environment:
+      SPRING_APPLICATION_NAME: "platinabank-accounts"
+    extends:
+      file: common-config.yml
+      service: microservice-configserver-config
+
+  platinabank-cards:
+    image: vulka9n/platinabank-cards:v2
+    container_name: platinabank-cards
+    ports:
+      - 8081:8081
+    environment:
+      SPRING_APPLICATION_NAME: "platinabank-cards"
+    extends:
+      file: common-config.yml
+      service: microservice-configserver-config
+
+  platinabank-loans:
+    image: vulka9n/platinabank-loans:v2
+    container_name: platinabank-loans
+    ports:
+      - 8082:8082
+    environment:
+      SPRING_APPLICATION_NAME: "platinabank-loans"
+    extends:
+      file: common-config.yml
+      service: microservice-configserver-config
+
+networks:
+  platinabank-network:
+    driver: bridge
