@@ -40,6 +40,10 @@
 			<artifactId>spring-cloud-starter-config</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
 			<version>2.2.0</version>
@@ -89,7 +93,7 @@
 				<version>3.4.0</version>
 				<configuration>
 					<to>
-						<image>vulka9n/platinabank-accounts:v3</image>
+						<image>vulka9n/platinabank-accounts:v4</image>
 					</to>
 				</configuration>
 			</plugin>

@@ -34,7 +34,7 @@ services:
       service: microservice-base-config
 
   platinabank-accounts:
-    image: vulka9n/platinabank-accounts:v3
+    image: vulka9n/platinabank-accounts:v4
     container_name: platinabank-accounts
     ports:
       - 8080:8080
@@ -45,7 +45,7 @@ services:
       service: microservice-configserver-config
 
   platinabank-cards:
-    image: vulka9n/platinabank-cards:v2
+    image: vulka9n/platinabank-cards:v3
     container_name: platinabank-cards
     ports:
       - 8081:8081
@@ -56,7 +56,7 @@ services:
       service: microservice-configserver-config
 
   platinabank-loans:
-    image: vulka9n/platinabank-loans:v2
+    image: vulka9n/platinabank-loans:v3
     container_name: platinabank-loans
     ports:
       - 8082:8082

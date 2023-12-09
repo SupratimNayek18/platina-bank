@@ -22,3 +22,4 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: prod
       SPRING_CONFIG_IMPORT: "configserver:http://platinabank-configserver:8071/"
+      SPRING_DATA_MONGODB_URI: "mongodb+srv://root:root@platina-bank.8evcdpv.mongodb.net/"
