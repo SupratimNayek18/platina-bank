@@ -11,6 +11,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,9 +25,11 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/loans")
 public class LoansController {
 
+    private static final Logger logger = LoggerFactory.getLogger(LoansController.class);
+
     private ILoansService loansService;
 
-    LoansController(ILoansService loansService){
+    LoansController(ILoansService loansService) {
         this.loansService = loansService;
     }
 
@@ -40,11 +44,11 @@ public class LoansController {
             description = "HTTP Status created"
     )
     @PostMapping("/createLoan")
-    public ResponseEntity<ResponseDto> createLoan(@RequestBody @Valid LoanRequestDto loanRequestDto){
+    public ResponseEntity<ResponseDto> createLoan(@RequestBody @Valid LoanRequestDto loanRequestDto) {
         loansService.createLoan(loanRequestDto);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(new ResponseDto(LoanConstants.STATUS_201,LoanConstants.MESSAGE_201));
+                .body(new ResponseDto(LoanConstants.STATUS_201, LoanConstants.MESSAGE_201));
     }
 
 
@@ -56,7 +60,7 @@ public class LoansController {
             description = "HTTP Status OK"
     )
     @GetMapping("/getLoanDetails")
-    public ResponseEntity<LoanDto> getLoanDetails(@RequestParam Long loanNumber){
+    public ResponseEntity<LoanDto> getLoanDetails(@RequestParam Long loanNumber) {
         LoanDto loanDto = loansService.getLoanDetails(loanNumber);
         return ResponseEntity
                 .ok()
@@ -72,7 +76,8 @@ public class LoansController {
             description = "HTTP Status OK"
     )
     @GetMapping("/getTotalLoanDetails")
-    public ResponseEntity<LoanResponseDto> getTotalLoanDetails(@RequestParam Long mobileNumber){
+    public ResponseEntity<LoanResponseDto> getTotalLoanDetails(@RequestHeader("platinabank-correlation-id") String correlationId, @RequestParam Long mobileNumber) {
+        logger.debug("platinabank-correlation-id found : {}",correlationId);
         LoanResponseDto loanResponseDto = loansService.getTotalLoanInfo(mobileNumber);
         return ResponseEntity
                 .ok()
@@ -99,14 +104,13 @@ public class LoansController {
             )
     })
     @PutMapping("/updateLoan")
-    public ResponseEntity<ResponseDto> updateLoan(@RequestParam Long loanNumber,@RequestParam int amount){
-        boolean status = loansService.updateLoanDetails(loanNumber,amount);
-        if(status){
+    public ResponseEntity<ResponseDto> updateLoan(@RequestParam Long loanNumber, @RequestParam int amount) {
+        boolean status = loansService.updateLoanDetails(loanNumber, amount);
+        if (status) {
             return ResponseEntity
                     .ok()
                     .body(new ResponseDto(LoanConstants.STATUS_200, LoanConstants.MESSAGE_200));
-        }
-        else{
+        } else {
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ResponseDto(LoanConstants.STATUS_500, LoanConstants.MESSAGE_500));
@@ -133,14 +137,13 @@ public class LoansController {
             )
     })
     @DeleteMapping("/deleteLoan")
-    public ResponseEntity<ResponseDto> deleteLoan(@RequestParam Long loanNumber){
+    public ResponseEntity<ResponseDto> deleteLoan(@RequestParam Long loanNumber) {
         boolean status = loansService.deleteLoanDetails(loanNumber);
-        if(status){
+        if (status) {
             return ResponseEntity
                     .ok()
                     .body(new ResponseDto(LoanConstants.STATUS_200, LoanConstants.MESSAGE_200));
-        }
-        else{
+        } else {
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ResponseDto(LoanConstants.STATUS_500, LoanConstants.MESSAGE_500));
@@ -167,7 +170,8 @@ public class LoansController {
             )
     })
     @GetMapping("/getConfig")
-    public ResponseEntity<ConfigProperties> getConfig(){
+    public ResponseEntity<ConfigProperties> getConfig() {
+        logger.debug("Loans Invoked");
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(configProperties);

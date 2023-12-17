@@ -11,14 +11,13 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(value = "/api/accounts", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -28,6 +27,8 @@ import org.springframework.web.bind.annotation.RestController;
 )
 @AllArgsConstructor
 public class CustomerController {
+
+    private static final Logger logger = LoggerFactory.getLogger(CustomerController.class);
 
     private ICustomerService customerService;
 
@@ -50,10 +51,13 @@ public class CustomerController {
             )
     })
     @GetMapping("/getCustomerDetails")
-    public ResponseEntity<CustomerDetailsDto> getCustomerDetails(@RequestParam @ValidMobileNumber long mobileNumber){
+    public ResponseEntity<CustomerDetailsDto> getCustomerDetails(
+            @RequestHeader("platinabank-correlation-id") String correlationId,
+            @RequestParam @ValidMobileNumber long mobileNumber){
+        logger.debug("platinabank-correlation-id found : {}",correlationId);
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(customerService.getCustomerDetails(mobileNumber));
+                .body(customerService.getCustomerDetails(mobileNumber,correlationId));
     }
 
 }

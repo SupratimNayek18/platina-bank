@@ -4,6 +4,6 @@ import com.platinabank.accounts.dto.CustomerDetailsDto;
 
 public interface ICustomerService {
 
-    CustomerDetailsDto getCustomerDetails(long mobileNumber);
+    CustomerDetailsDto getCustomerDetails(long mobileNumber,String correlationId);
 
 }

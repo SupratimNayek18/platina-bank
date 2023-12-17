@@ -5,6 +5,7 @@ import com.platinabank.accounts.dto.*;
 import com.platinabank.accounts.service.IAccountsService;
 import com.platinabank.accounts.util.validators.customerIdValidator.ValidCustomerId;
 import com.platinabank.accounts.util.validators.mobileNumberValidator.ValidMobileNumber;
+import io.github.resilience4j.retry.annotation.Retry;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -15,6 +16,8 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import org.apache.coyote.Response;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -31,6 +34,8 @@ import org.springframework.web.bind.annotation.*;
 public class AccountsController {
 
     private IAccountsService accountsService;
+
+    private static final Logger logger = LoggerFactory.getLogger(AccountsController.class);
 
     AccountsController(IAccountsService accountsService){
         this.accountsService = accountsService;
@@ -165,12 +170,21 @@ public class AccountsController {
                     )
             )
     })
+    @Retry(name = "getConfigRetry",fallbackMethod = "getConfigFallback")
     @GetMapping("/getConfig")
     public ResponseEntity<ConfigProperties> getConfig(){
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(configProperties);
+        logger.debug("getConfig() called");
+        throw new NullPointerException();
+//        return ResponseEntity
+//                .status(HttpStatus.OK)
+//                .body(configProperties);
     }
 
+    public ResponseEntity<ConfigProperties> getConfigFallback(Throwable throwable){
+        logger.debug("getConfigFallback() called");
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(null);
+    }
 
 }

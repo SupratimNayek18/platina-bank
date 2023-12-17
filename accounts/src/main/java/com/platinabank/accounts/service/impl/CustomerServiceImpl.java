@@ -33,7 +33,7 @@ public class CustomerServiceImpl implements ICustomerService {
     private LoansFeignClient loansFeignClient;
 
     @Override
-    public CustomerDetailsDto getCustomerDetails(long mobileNumber) {
+    public CustomerDetailsDto getCustomerDetails(long mobileNumber,String correlationId) {
         /**
          * Fetching customer with given mobile number
          * Throwing exception if not exists
@@ -48,14 +48,26 @@ public class CustomerServiceImpl implements ICustomerService {
         Account account = accountsRepository.findByCustomerId(customer.getCustomerId())
                 .orElseThrow(()->new ResourceNotFoundException("Account","customerId",customer.getCustomerId()));
 
+        /**
+         * Creating customerdetails dto and setting account info
+         */
         CustomerDetailsDto customerDetailsDto = CustomerMapper.mapToCustomerDetailsDto(customer,new CustomerDetailsDto());
         customerDetailsDto.setAccountDto(AccountMapper.mapToAccountsDto(account,new AccountDto()));
 
-        ResponseEntity<List<CardDto>> cardDtolistResponseEntity = cardsFeignClient.getAllCardDetails(mobileNumber);
-        ResponseEntity<LoanResponseDto> loanResponseDtoResponseEntity = loansFeignClient.getTotalLoanDetails(mobileNumber);
+        /**
+         * Fetching card and loan details using feign clients and setting
+         * in the carddetails dto
+         */
+        ResponseEntity<List<CardDto>> cardDtolistResponseEntity = cardsFeignClient.getAllCardDetails(correlationId,mobileNumber);
+        ResponseEntity<LoanResponseDto> loanResponseDtoResponseEntity = loansFeignClient.getTotalLoanDetails(correlationId,mobileNumber);
 
-        customerDetailsDto.setCardDtoList(cardDtolistResponseEntity.getBody());
-        customerDetailsDto.setLoanResponseDto(loanResponseDtoResponseEntity.getBody());
+        if(cardDtolistResponseEntity!=null){
+            customerDetailsDto.setCardDtoList(cardDtolistResponseEntity.getBody());
+        }
+
+        if(loanResponseDtoResponseEntity!=null){
+            customerDetailsDto.setLoanResponseDto(loanResponseDtoResponseEntity.getBody());
+        }
 
         return customerDetailsDto;
     }

@@ -23,9 +23,17 @@ management:
     web:
       exposure:
         include: "*"
+  health:
+    readiness-state:
+      enabled: true
+    liveness-state:
+      enabled: true
   endpoint:
     shutdown:
       enabled: true
+    health:
+      probes:
+        enabled: true
   info:
     env:
       enabled: true
@@ -46,3 +54,9 @@ info:
     name: platinabank-cards
     description: "Platina Bank Cards Application"
     version: 1.0.4
+
+logging:
+  level:
+    com:
+      platinabank:
+        cards: DEBUG

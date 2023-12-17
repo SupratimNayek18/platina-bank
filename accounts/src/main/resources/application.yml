@@ -17,15 +17,27 @@ spring:
     port: 5672
     username: guest
     password: guest
+  cloud:
+    openfeign:
+      circuitbreaker:
+        enabled: true
 
 management:
   endpoints:
     web:
       exposure:
         include: "*"
+  health:
+    readiness-state:
+      enabled: true
+    liveness-state:
+      enabled: true
   endpoint:
     shutdown:
       enabled: true
+    health:
+      probes:
+        enabled: true
   info:
     env:
       enabled: true
@@ -41,9 +53,34 @@ eureka:
     serviceUrl:
       defaultZone: http://localhost:8761/eureka
 
+resilience4j.circuitbreaker:
+  configs:
+    default:
+      slidingWindowSize: 10
+      permittedNumberOfCallsInHalfOpenState: 5
+      failureRateThreshold: 50
+      waitDurationInOpenState: 10s
+
+resilience4j.retry:
+  configs:
+    getConfigRetry:
+      maxAttempts: 3
+      waitDuration: 5s
+      enableExponentialBackoff: true
+      exponentialBackoffMultiplier: 2
+      ignoreExceptions:
+        - java.lang.NullPointerException
+      retryExceptions:
+        - java.util.concurrent.TimeoutException
+
 info:
   app:
     name: platinabank-accounts
     description: "Platina Bank Accounts Application"
     version: 1.0.5
 
+logging:
+  level:
+    com:
+      platinabank:
+        accounts: DEBUG

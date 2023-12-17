@@ -13,12 +13,21 @@ services:
     environment:
       SPRING_RABBITMQ_HOST: rabbit
 
-  microservice-configserver-config:
+  microservice-gateway-config:
     extends:
       service: microservice-base-config
+    environment:
+      SPRING_CONFIG_IMPORT: "configserver:http://platinabank-configserver:8071/"
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: "http://platinabank-eurekaserver:8761/eureka"
+
+  microservice-total-config:
+    extends:
+      service: microservice-gateway-config
     depends_on:
       platinabank-configserver:
         condition: service_healthy
+      platinabank-eurekaserver:
+        condition: service_healthy
     environment:
       SPRING_PROFILES_ACTIVE: default
-      SPRING_CONFIG_IMPORT: "configserver:http://platinabank-configserver:8071/"
+      SPRING_DATA_MONGODB_URI: "mongodb+srv://root:root@platina-bank.8evcdpv.mongodb.net/"

@@ -1,0 +1,51 @@
+spring:
+  application:
+    name: platinabank-gatewayserver
+  config:
+    import: optional:configserver:http://localhost:8071/
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: false
+          lowerCaseServiceId: true
+      httpclient:
+        connect-timeout: 1000
+        response-timeout: 2s
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    gateway:
+      enabled: true
+  info:
+    env:
+      enabled: true
+
+resilience4j.circuitbreaker:
+  configs:
+    default:
+      slidingWindowSize: 10
+      permittedNumberOfCallsInHalfOpenState: 3
+      failureRateThreshold: 60
+      waitDurationInOpenState: 20s
+
+info:
+  app:
+    name: platinabank-gatewayserver
+    description: "Platina Bank Gateway Application"
+    version: 1.0.0
+
+logging:
+  level:
+    com:
+      platinabank:
+        gatewayserver: DEBUG

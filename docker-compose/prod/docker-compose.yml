@@ -33,38 +33,92 @@ services:
       file: common-config.yml
       service: microservice-base-config
 
+  platinabank-eurekaserver:
+    image: vulka9n/platinabank-eurekaserver:v1
+    container_name: platinabank-eurekaserver
+    ports:
+      - 8761:8761
+    healthcheck:
+      test: "curl --fail --silent localhost:8761/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    depends_on:
+      platinabank-configserver:
+        condition: service_healthy
+    environment:
+      SPRING_CONFIG_IMPORT: "configserver:http://platinabank-configserver:8071/"
+    extends:
+      file: common-config.yml
+      service: microservice-base-config
+
   platinabank-accounts:
-    image: vulka9n/platinabank-accounts:v4
+    image: vulka9n/platinabank-accounts:v6
     container_name: platinabank-accounts
     ports:
       - 8080:8080
+    healthcheck:
+      test: "curl --fail --silent localhost:8080/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
     environment:
       SPRING_APPLICATION_NAME: "platinabank-accounts"
     extends:
       file: common-config.yml
-      service: microservice-configserver-config
+      service: microservice-total-config
 
   platinabank-cards:
-    image: vulka9n/platinabank-cards:v3
+    image: vulka9n/platinabank-cards:v5
     container_name: platinabank-cards
     ports:
       - 8081:8081
+    healthcheck:
+      test: "curl --fail --silent localhost:8081/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
     environment:
       SPRING_APPLICATION_NAME: "platinabank-cards"
     extends:
       file: common-config.yml
-      service: microservice-configserver-config
+      service: microservice-total-config
 
   platinabank-loans:
-    image: vulka9n/platinabank-loans:v3
+    image: vulka9n/platinabank-loans:v5
     container_name: platinabank-loans
     ports:
       - 8082:8082
+    healthcheck:
+      test: "curl --fail --silent localhost:8082/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
     environment:
       SPRING_APPLICATION_NAME: "platinabank-loans"
     extends:
       file: common-config.yml
-      service: microservice-configserver-config
+      service: microservice-total-config
+
+  platinabank-gatewayserver:
+    image: vulka9n/platinabank-gatewayserver:v1
+    container_name: platinabank-gatewayserver
+    ports:
+      - 9090:9090
+    depends_on:
+      platinabank-accounts:
+        condition: service_healthy
+      platinabank-cards:
+        condition: service_healthy
+      platinabank-loans:
+        condition: service_healthy
+    extends:
+      file: common-config.yml
+      service: microservice-gateway-config
 
 networks:
   platinabank-network:
