@@ -54,7 +54,7 @@ services:
       service: microservice-base-config
 
   platinabank-accounts:
-    image: vulka9n/platinabank-accounts:v6
+    image: vulka9n/platinabank-accounts:v7
     container_name: platinabank-accounts
     ports:
       - 8080:8080
@@ -71,7 +71,7 @@ services:
       service: microservice-total-config
 
   platinabank-cards:
-    image: vulka9n/platinabank-cards:v5
+    image: vulka9n/platinabank-cards:v6
     container_name: platinabank-cards
     ports:
       - 8081:8081
@@ -88,7 +88,7 @@ services:
       service: microservice-total-config
 
   platinabank-loans:
-    image: vulka9n/platinabank-loans:v5
+    image: vulka9n/platinabank-loans:v6
     container_name: platinabank-loans
     ports:
       - 8082:8082
@@ -104,8 +104,23 @@ services:
       file: common-config.yml
       service: microservice-total-config
 
+  platinabank-redis:
+    image: redis
+    container_name: platinabank-redis
+    ports:
+      - 6379:6379
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    extends:
+      file: common-config.yml
+      service: network-deploy-service
+
   platinabank-gatewayserver:
-    image: vulka9n/platinabank-gatewayserver:v1
+    image: vulka9n/platinabank-gatewayserver:v2
     container_name: platinabank-gatewayserver
     ports:
       - 9090:9090
@@ -116,6 +131,10 @@ services:
         condition: service_healthy
       platinabank-loans:
         condition: service_healthy
+      platinabank-redis:
+        condition: service_healthy
+    environment:
+      SPIRNG_DATA_REDIS_HOST: "platinabank-redis"
     extends:
       file: common-config.yml
       service: microservice-gateway-config

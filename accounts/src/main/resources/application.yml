@@ -63,15 +63,22 @@ resilience4j.circuitbreaker:
 
 resilience4j.retry:
   configs:
-    getConfigRetry:
+    default:
       maxAttempts: 3
-      waitDuration: 5s
+      waitDuration: 500
       enableExponentialBackoff: true
       exponentialBackoffMultiplier: 2
       ignoreExceptions:
         - java.lang.NullPointerException
       retryExceptions:
         - java.util.concurrent.TimeoutException
+
+resilience4j.ratelimiter:
+  configs:
+    default:
+      timeoutDuration: 1000
+      limitRefreshPeriod: 5000
+      limitForPeriod: 5
 
 info:
   app:

@@ -25,6 +25,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.concurrent.TimeoutException;
+
 @RestController
 @RequestMapping(value = "/api/accounts", produces = MediaType.APPLICATION_JSON_VALUE)
 @Validated
@@ -172,12 +174,11 @@ public class AccountsController {
     })
     @Retry(name = "getConfigRetry",fallbackMethod = "getConfigFallback")
     @GetMapping("/getConfig")
-    public ResponseEntity<ConfigProperties> getConfig(){
+    public ResponseEntity<ConfigProperties> getConfig() throws TimeoutException {
         logger.debug("getConfig() called");
-        throw new NullPointerException();
-//        return ResponseEntity
-//                .status(HttpStatus.OK)
-//                .body(configProperties);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(configProperties);
     }
 
     public ResponseEntity<ConfigProperties> getConfigFallback(Throwable throwable){

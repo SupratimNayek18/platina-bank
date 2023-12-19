@@ -4,6 +4,7 @@ import com.platinabank.accounts.dto.CustomerDetailsDto;
 import com.platinabank.accounts.dto.ErrorResponseDto;
 import com.platinabank.accounts.service.ICustomerService;
 import com.platinabank.accounts.util.validators.mobileNumberValidator.ValidMobileNumber;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -50,6 +51,7 @@ public class CustomerController {
                     )
             )
     })
+    @RateLimiter(name = "getCustomerDetails",fallbackMethod = "getCustomerDetailsFallBack")
     @GetMapping("/getCustomerDetails")
     public ResponseEntity<CustomerDetailsDto> getCustomerDetails(
             @RequestHeader("platinabank-correlation-id") String correlationId,
@@ -58,6 +60,12 @@ public class CustomerController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(customerService.getCustomerDetails(mobileNumber,correlationId));
+    }
+
+    public ResponseEntity<CustomerDetailsDto> getCustomerDetailsFallBack(Throwable throwable){
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(null);
     }
 
 }
