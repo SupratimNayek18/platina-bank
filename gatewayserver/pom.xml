@@ -80,7 +80,7 @@
 				<version>3.4.0</version>
 				<configuration>
 					<to>
-						<image>vulka9n/platinabank-gatewayserver:v2</image>
+						<image>vulka9n/platinabank-gatewayserver:v3</image>
 					</to>
 				</configuration>
 			</plugin>
