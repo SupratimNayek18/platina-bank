@@ -82,7 +82,7 @@ public class ControllerLayerTest {
 
         when(cardsService.getAllCardDetails(7699091004L)).thenReturn(cardList);
 
-        ResponseEntity<List<CardDto>> response = cardsController.getAllCardDetails(7699091004L);
+        ResponseEntity<List<CardDto>> response = cardsController.getAllCardDetails("wdefsvc-sdacvx-wdsfvxc",7699091004L);
 
         assertEquals(HttpStatus.OK,response.getStatusCode());
         assertEquals(cardList,response.getBody());

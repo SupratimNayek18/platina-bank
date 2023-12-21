@@ -1,0 +1,29 @@
+global:
+  scrape_interval: 5s # Set the scrape interval to every 5 seconds.
+  evaluation_interval: 5s # Evaluate rules every 5 seconds.
+
+scrape_configs:
+  - job_name: "platinabank-accounts"
+    metrics_path: "/actuator/prometheus"
+    static_configs:
+      - targets: ["platinabank-accounts:8080"]
+  - job_name: "platinabank-loans"
+    metrics_path: "/actuator/prometheus"
+    static_configs:
+      - targets: ["platinabank-loans:8082"]
+  - job_name: "platinabank-cards"
+    metrics_path: "/actuator/prometheus"
+    static_configs:
+      - targets: ["platinabank-cards:8081"]
+  - job_name: "platinabank-gatewayserver"
+    metrics_path: "/actuator/prometheus"
+    static_configs:
+      - targets: ["platinabank-gatewayserver:9090"]
+  - job_name: "platinabank-eurekaserver"
+    metrics_path: "/actuator/prometheus"
+    static_configs:
+      - targets: ["platinabank-eurekaserver:8761"]
+  - job_name: "platinabank-configserver"
+    metrics_path: "/actuator/prometheus"
+    static_configs:
+      - targets: ["platinabank-configserver:8071"]

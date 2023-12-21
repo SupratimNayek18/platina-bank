@@ -81,8 +81,9 @@ public class CardsController {
     )
     @GetMapping("/getAllCardDetails")
     public ResponseEntity<List<CardDto>> getAllCardDetails(@RequestHeader("platinabank-correlation-id") String correlationId, @RequestParam Long mobileNumber) {
-        logger.debug("platinabank-correlation-id found : {}",correlationId);
+        logger.debug("getAllCardDetails method start");
         List<CardDto> cardList = cardsService.getAllCardDetails(mobileNumber);
+        logger.debug("getAllCardDetails method end");
         return ResponseEntity
                 .ok()
                 .body(cardList);

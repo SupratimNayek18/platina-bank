@@ -35,6 +35,9 @@ management:
   info:
     env:
       enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}
 
 resilience4j.circuitbreaker:
   configs:
@@ -55,3 +58,5 @@ logging:
     com:
       platinabank:
         gatewayserver: DEBUG
+  pattern:
+    level: "%5p [${spring.application.name},%X{trace_id},%X{span_id}]"

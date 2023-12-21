@@ -77,8 +77,9 @@ public class LoansController {
     )
     @GetMapping("/getTotalLoanDetails")
     public ResponseEntity<LoanResponseDto> getTotalLoanDetails(@RequestHeader("platinabank-correlation-id") String correlationId, @RequestParam Long mobileNumber) {
-        logger.debug("platinabank-correlation-id found : {}",correlationId);
+        logger.debug("getTotalLoanDetails method start");
         LoanResponseDto loanResponseDto = loansService.getTotalLoanInfo(mobileNumber);
+        logger.debug("getTotalLoanDetails method end");
         return ResponseEntity
                 .ok()
                 .body(loanResponseDto);

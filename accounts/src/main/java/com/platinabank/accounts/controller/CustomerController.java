@@ -56,16 +56,22 @@ public class CustomerController {
     public ResponseEntity<CustomerDetailsDto> getCustomerDetails(
             @RequestHeader("platinabank-correlation-id") String correlationId,
             @RequestParam @ValidMobileNumber long mobileNumber){
-        logger.debug("platinabank-correlation-id found : {}",correlationId);
+
+        logger.debug("getCustomerDetails method start");
+        CustomerDetailsDto customerDetailsDto = customerService.getCustomerDetails(mobileNumber,correlationId);
+        logger.debug("getCustomerDetails method end");
+
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(customerService.getCustomerDetails(mobileNumber,correlationId));
+                .body(customerDetailsDto);
     }
 
     public ResponseEntity<CustomerDetailsDto> getCustomerDetailsFallBack(Throwable throwable){
+
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(null);
+
     }
 
 }

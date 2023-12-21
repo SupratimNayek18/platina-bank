@@ -66,7 +66,7 @@ public class ControllerLayerTest {
 
         when(loansService.getTotalLoanInfo(4567891237L)).thenReturn(loanResponseDto);
 
-        ResponseEntity<LoanResponseDto> response = loansController.getTotalLoanDetails(4567891237L);
+        ResponseEntity<LoanResponseDto> response = loansController.getTotalLoanDetails("wdefd-wdfs-wdasf",4567891237L);
 
         assertEquals(response.getStatusCode(),HttpStatus.OK);
         assertEquals(response.getBody(),loanResponseDto);
