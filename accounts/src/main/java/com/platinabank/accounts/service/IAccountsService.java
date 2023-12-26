@@ -17,4 +17,6 @@ public interface IAccountsService {
 
     boolean deleteAccount(int customerId);
 
+    void updateCommunicationStatus(Long accountNumber);
+
 }

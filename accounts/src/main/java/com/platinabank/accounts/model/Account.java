@@ -34,4 +34,6 @@ public class Account {
 
     private String branchAddress;
 
+    private Boolean communicationSw;
+
 }

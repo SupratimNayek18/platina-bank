@@ -22,6 +22,7 @@ services:
     environment:
       SPRING_CONFIG_IMPORT: "configserver:http://platinabank-configserver:8071/"
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: "http://platinabank-eurekaserver:8761/eureka"
+      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK-SET-URI: "http://keycloak:8080/realms/master/protocol/openid-connect/certs"
 
   microservice-total-config:
     extends:

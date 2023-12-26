@@ -103,7 +103,7 @@
 				<version>3.4.0</version>
 				<configuration>
 					<to>
-						<image>vulka9n/platinabank-gatewayserver:v5</image>
+						<image>vulka9n/platinabank-gatewayserver:v6</image>
 					</to>
 				</configuration>
 			</plugin>

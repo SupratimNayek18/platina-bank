@@ -2,6 +2,7 @@ package com.platinabank.accounts.service.impl;
 
 import com.platinabank.accounts.constants.AccountsConstants;
 import com.platinabank.accounts.dto.AccountDto;
+import com.platinabank.accounts.dto.AccountsMsgDto;
 import com.platinabank.accounts.dto.CustomerDto;
 import com.platinabank.accounts.exception.CustomerAlreadyExistsException;
 import com.platinabank.accounts.exception.ResourceNotFoundException;
@@ -14,6 +15,9 @@ import com.platinabank.accounts.util.IdGenerator;
 import com.platinabank.accounts.util.mapper.AccountMapper;
 import com.platinabank.accounts.util.mapper.CustomerMapper;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -23,6 +27,10 @@ import java.util.Optional;
 @AllArgsConstructor
 public class AccountsServiceImpl implements IAccountsService {
 
+    public static final Logger logger = LoggerFactory.getLogger(AccountsServiceImpl.class);
+
+    private final StreamBridge streamBridge;
+
     private AccountsRepository accountsRepository;
 
     private CustomerRepository customerRepository;
@@ -31,19 +39,20 @@ public class AccountsServiceImpl implements IAccountsService {
 
     /**
      * Method to register new customer
+     *
      * @param customerDto - CustomerDto object
      */
     @Override
-    public void createAccount(CustomerDto customerDto){
+    public void createAccount(CustomerDto customerDto) {
 
         //Throwing exception if customer mobile number already exists in the system
         Optional<Customer> fetchedCustomer = customerRepository.findByMobileNumber(customerDto.getMobileNumber());
-        if(fetchedCustomer.isPresent()){
-            throw new CustomerAlreadyExistsException("Customer with mobile number "+customerDto.getMobileNumber()+" already exists");
+        if (fetchedCustomer.isPresent()) {
+            throw new CustomerAlreadyExistsException("Customer with mobile number " + customerDto.getMobileNumber() + " already exists");
         }
 
         //Mapping the customerDto to customer model
-        Customer customer = CustomerMapper.mapToCustomer(customerDto,new Customer());
+        Customer customer = CustomerMapper.mapToCustomer(customerDto, new Customer());
 
         //Generating customerId for customer model and saving the model into the repository
         customer.setCustomerId(idGenerator.generateCustomerId());
@@ -59,8 +68,16 @@ public class AccountsServiceImpl implements IAccountsService {
         account.setBranchAddress(AccountsConstants.ADDRESS);
 
         //Saving the account model
-        accountsRepository.save(account);
+        Account savedAccount = accountsRepository.save(account);
+        sendCommunication(savedAccount,savedCustomer);
+    }
 
+    private void sendCommunication(Account account, Customer customer) {
+        var accountsMsgDto = new AccountsMsgDto(account.getAccountNumber(), customer.getFirstName() + " " + customer.getLastName(),
+                customer.getEmail(), customer.getMobileNumber());
+        logger.info("Sending Communication request for the details: {}", accountsMsgDto);
+        var result = streamBridge.send("sendCommunication-out-0", accountsMsgDto);
+        logger.info("Is the Communication request successfully triggered ? : {}", result);
     }
 
     //Method to update account details
@@ -69,20 +86,20 @@ public class AccountsServiceImpl implements IAccountsService {
 
         boolean isUpdated = false;
 
-        if(accountDto.getAccountNumber()!=0){
+        if (accountDto.getAccountNumber() != 0) {
             //If account number exists updating and saving the data else throwing exception
             Account account = accountsRepository.findById(accountDto.getAccountNumber())
-                    .orElseThrow(()-> new ResourceNotFoundException("Account","accountNumber",accountDto.getAccountNumber()));
-            account = AccountMapper.mapToAccounts(accountDto,account);
+                    .orElseThrow(() -> new ResourceNotFoundException("Account", "accountNumber", accountDto.getAccountNumber()));
+            account = AccountMapper.mapToAccounts(accountDto, account);
             accountsRepository.save(account);
 
             //Checking if customer dto exists in the accountDto received as argument
-            if(accountDto.getCustomerDto()!=null){
+            if (accountDto.getCustomerDto() != null) {
                 //Updating customer information and saving in the db
                 int customerId = account.getCustomerId();
                 Customer customer = customerRepository.findById(customerId)
-                        .orElseThrow(()->new ResourceNotFoundException("Customer","customerId",customerId));
-                customer = CustomerMapper.mapToCustomer(accountDto.getCustomerDto(),customer);
+                        .orElseThrow(() -> new ResourceNotFoundException("Customer", "customerId", customerId));
+                customer = CustomerMapper.mapToCustomer(accountDto.getCustomerDto(), customer);
                 customerRepository.save(customer);
             }
             isUpdated = true;
@@ -106,11 +123,11 @@ public class AccountsServiceImpl implements IAccountsService {
          * Throwing exception if not exists
          */
         Account account = accountsRepository.findByCustomerId(customer.getCustomerId())
-                .orElseThrow(()->new ResourceNotFoundException("Account","customerId",customer.getCustomerId()));
+                .orElseThrow(() -> new ResourceNotFoundException("Account", "customerId", customer.getCustomerId()));
 
         //Setting customer information in account dto and returning the same
-        AccountDto accountDto = AccountMapper.mapToAccountsDto(account,new AccountDto());
-        accountDto.setCustomerDto(CustomerMapper.mapToCustomerDto(customer,new CustomerDto()));
+        AccountDto accountDto = AccountMapper.mapToAccountsDto(account, new AccountDto());
+        accountDto.setCustomerDto(CustomerMapper.mapToCustomerDto(customer, new CustomerDto()));
 
         return accountDto;
     }
@@ -119,10 +136,22 @@ public class AccountsServiceImpl implements IAccountsService {
     @Override
     public boolean deleteAccount(int customerId) {
         Customer customer = customerRepository.findById(customerId)
-                .orElseThrow(()->new ResourceNotFoundException("Customer","customerId",customerId));
+                .orElseThrow(() -> new ResourceNotFoundException("Customer", "customerId", customerId));
         customerRepository.delete(customer);
         accountsRepository.deleteByCustomerId(customerId);
         return true;
+    }
+
+    //Method to update communication status
+    @Override
+    public void updateCommunicationStatus(Long accountNumber) {
+        if(accountNumber !=null ){
+            Account account = accountsRepository.findById(accountNumber).orElseThrow(
+                    () -> new ResourceNotFoundException("Account", "AccountNumber", accountNumber)
+            );
+            account.setCommunicationSw(true);
+            accountsRepository.save(account);
+        }
     }
 
 }

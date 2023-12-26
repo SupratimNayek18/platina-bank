@@ -12,15 +12,25 @@ spring:
     mongodb:
       uri: mongodb://localhost:27017/
       database: accountsDB
+  cloud:
+    openfeign:
+      circuitbreaker:
+        enabled: true
+    function:
+      definition: updateCommunication
+    stream:
+      bindings:
+        updateCommunication-in-0:
+          destination: communication-sent
+          group: ${spring.application.name}
+        sendCommunication-out-0:
+          destination: send-communication
   rabbitmq:
     host: localhost
     port: 5672
     username: guest
     password: guest
-  cloud:
-    openfeign:
-      circuitbreaker:
-        enabled: true
+    connection-timeout: 10s
 
 management:
   endpoints:
