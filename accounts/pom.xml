@@ -79,7 +79,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-stream-binder-rabbit</artifactId>
+			<artifactId>spring-cloud-stream-binder-kafka</artifactId>
 		</dependency>
 
 		<dependency>
@@ -120,7 +120,7 @@
 				<version>3.4.0</version>
 				<configuration>
 					<to>
-						<image>vulka9n/platinabank-accounts:v10</image>
+						<image>vulka9n/platinabank-accounts:v11</image>
 					</to>
 				</configuration>
 			</plugin>
