@@ -1,0 +1,26 @@
+deploymentName: platinabank-eurekaserver-deployment
+serviceName: platinabank-eurekaserver
+appLabel: platinabank-eurekaserver
+appName: platinabank-eurekaserver
+
+replicaCount: 1
+
+image:
+  repository: vulka9n/platinabank-eurekaserver
+  tag: v3
+
+containerPort: 8761
+
+service:
+  type: ClusterIP
+  port: 8761
+  targetPort: 8761
+
+appname_enabled: false
+profile_enabled: false
+config_enabled: true
+eureka_enabled: false
+mongo_enabled: false
+resouceserver_enabled: false
+otel_enabled: true
+kafka_enabled: false

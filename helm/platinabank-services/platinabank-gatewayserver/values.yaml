@@ -1,0 +1,26 @@
+deploymentName: platinabank-gatewayserver-deployment
+serviceName: platinabank-gatewayserver
+appLabel: platinabank-gatewayserver
+appName: platinabank-gatewayserver
+
+replicaCount: 1
+
+image:
+  repository: vulka9n/platinabank-gatewayserver
+  tag: v6
+
+containerPort: 9090
+
+service:
+  type: LoadBalancer
+  port: 9090
+  targetPort: 9090
+
+appname_enabled: false
+profile_enabled: false
+config_enabled: true
+eureka_enabled: true
+mongo_enabled: false
+resourceserver_enabled: true
+otel_enabled: true
+kafka_enabled: false

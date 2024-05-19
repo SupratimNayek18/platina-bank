@@ -14,6 +14,22 @@ spring:
           group: ${spring.application.name}
         emailsms-out-0:
           destination: communication-sent
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: supratimnayek@gmail.com
+    password: zxtdpxltuffzxbba
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+        connectiontimeout: 5000
+        timeout: 5000
+        writetimeout: 5000
+
   rabbitmq:
     host: localhost
     port: 5672

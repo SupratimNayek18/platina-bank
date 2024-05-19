@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: eurekaserver-deployment
+  labels:
+    app: platinabank-eurekaserver
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: platinabank-eurekaserver
+  template:
+    metadata:
+      labels:
+        app: platinabank-eurekaserver
+    spec:
+      containers:
+        - name: platinabank-eurekaserver
+          image: vulka9n/platinabank-eurekaserver:v3
+          ports:
+            - containerPort: 8761
+          env:
+            - name: SPRING_CONFIG_IMPORT
+              valueFrom:
+                configMapKeyRef:
+                  name: platinabank-configmap
+                  key: SPRING_CONFIG_IMPORT
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: platinabank-eurekaserver
+spec:
+  selector:
+    app: platinabank-eurekaserver
+  type: LoadBalancer
+  ports:
+    - protocol: TCP
+      port: 8761
+      targetPort: 8761

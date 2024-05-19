@@ -387,7 +387,7 @@ services:
       service: microservice-gateway-config
 
   platinabank-message:
-    image: vulka9n/platinabank-message:v2
+    image: vulka9n/platinabank-message:v3
     container_name: platinabank-message
     depends_on:
       rabbit:

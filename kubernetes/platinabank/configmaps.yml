@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: platinabank-configmap
+data:
+  SPRING_PROFILES_ACTIVE: prod
+  SPRING_CONFIG_IMPORT: "configserver:http://platinabank-configserver:8071/"
+  EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: "http://platinabank-eurekaserver:8761/eureka/"
+  KEYCLOAK_ADMIN: admin
+  KEYCLOAK_ADMIN_PASSWORD: admin
+  SPRING_DATA_MONGODB_URI: "mongodb+srv://root:root@platina-bank.8evcdpv.mongodb.net/"
+  SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK-SET-URI: "http://keycloak:7080/realms/master/protocol/openid-connect/certs"

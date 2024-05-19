@@ -1,0 +1,6 @@
+dependencies:
+- name: platinabank-common
+  repository: file://../../platinabank-common
+  version: 0.1.0
+digest: sha256:6cb4712caec1a7d2298c6b5905fcc6562082fc81f26f2cc59edbd572469ea304
+generated: "2024-02-25T19:07:02.9960811+05:30"

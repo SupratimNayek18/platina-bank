@@ -1,0 +1,27 @@
+dependencies:
+- name: platinabank-common
+  repository: file://../../platinabank-common
+  version: 0.1.0
+- name: platinabank-configserver
+  repository: file://../../platinabank-services/platinabank-configserver
+  version: 0.1.0
+- name: platinabank-eurekaserver
+  repository: file://../../platinabank-services/platinabank-eurekaserver
+  version: 0.1.0
+- name: platinabank-accounts
+  repository: file://../../platinabank-services/platinabank-accounts
+  version: 0.1.0
+- name: platinabank-cards
+  repository: file://../../platinabank-services/platinabank-cards
+  version: 0.1.0
+- name: platinabank-loans
+  repository: file://../../platinabank-services/platinabank-loans
+  version: 0.1.0
+- name: platinabank-gatewayserver
+  repository: file://../../platinabank-services/platinabank-gatewayserver
+  version: 0.1.0
+- name: platinabank-message
+  repository: file://../../platinabank-services/platinabank-message
+  version: 0.1.0
+digest: sha256:4037d586af2a16d62bb41fed3fab7506ae15af9d862b961fbd33b3bc7d8f393c
+generated: "2024-02-25T20:03:15.3609963+05:30"

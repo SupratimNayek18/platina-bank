@@ -1,0 +1,26 @@
+deploymentName: platinabank-accounts-deployment
+serviceName: platinabank-accounts
+appLabel: platinabank-accounts
+appName: platinabank-accounts
+
+replicaCount: 1
+
+image:
+  repository: vulka9n/platinabank-accounts
+  tag: v11
+
+containerPort: 8080
+
+service:
+  type: ClusterIP
+  port: 8080
+  targetPort: 8080
+
+appname_enabled: false
+profile_enabled: true
+config_enabled: true
+eureka_enabled: true
+mongo_enabled: true
+resouceserver_enabled: false
+otel_enabled: true
+kafka_enabled: true

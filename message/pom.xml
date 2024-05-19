@@ -30,7 +30,10 @@
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-stream-binder-kafka</artifactId>
 		</dependency>
-
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-mail</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
@@ -57,7 +60,7 @@
 				<version>3.4.0</version>
 				<configuration>
 					<to>
-						<image>vulka9n/platinabank-message:v2</image>
+						<image>vulka9n/platinabank-message:v3</image>
 					</to>
 				</configuration>
 			</plugin>

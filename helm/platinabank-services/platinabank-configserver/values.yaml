@@ -1,0 +1,26 @@
+deploymentName: platinabank-configserver-deployment
+serviceName: platinabank-configserver
+appLabel: platinabank-configserver
+appName: platinabank-configserver
+
+replicaCount: 1
+
+image:
+  repository: vulka9n/platinabank-configserver
+  tag: v3
+
+containerPort: 8071
+
+service:
+  type: ClusterIP
+  port: 8071
+  targetPort: 8071
+
+appname_enabled: false
+profile_enabled: false
+config_enabled: false
+eureka_enabled: false
+mongo_enabled: false
+resouceserver_enabled: false
+otel_enabled: true
+kafka_enabled: false

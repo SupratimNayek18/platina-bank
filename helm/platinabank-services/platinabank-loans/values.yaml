@@ -1,0 +1,26 @@
+deploymentName: platinabank-loans-deployment
+serviceName: platinabank-loans
+appLabel: platinabank-loans
+appName: platinabank-loans
+
+replicaCount: 1
+
+image:
+  repository: vulka9n/platinabank-loans
+  tag: v8
+
+containerPort: 8082
+
+service:
+  type: ClusterIP
+  port: 8082
+  targetPort: 8082
+
+appname_enabled: false
+profile_enabled: true
+config_enabled: true
+eureka_enabled: true
+mongo_enabled: true
+resouceserver_enabled: false
+otel_enabled: true
+kafka_enabled: false

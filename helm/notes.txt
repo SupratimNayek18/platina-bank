@@ -1,0 +1,8 @@
+delete PVC before uninstalling helm charts
+
+
+for logging in to grafana console:
+
+$secret = kubectl get secret grafana-admin --namespace default -o jsonpath="{.data.GF_SECURITY_ADMIN_PASSWORD}"
+$decodedSecret = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($secret))
+echo "Password: $decodedSecret"
